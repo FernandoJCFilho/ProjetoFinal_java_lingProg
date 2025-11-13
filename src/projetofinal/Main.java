@@ -1,7 +1,10 @@
 package projetofinal;
 
 import java.util.Scanner;
-
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 public class Main {
     // Variaveis principais
@@ -10,6 +13,7 @@ public class Main {
     private static int contPecas = 0; 
     public static String[][] servicos = new String[100][5];
     private static int contServicos = 0; 
+    private static final String nomeArquivo = "Relatorio_Servicos.txt";
     
     // Cadastro de Peca
     public static void cadastrarPeca(){
@@ -68,8 +72,51 @@ public class Main {
             // mensagem confirmando o cadastro
             System.out.println("Servico cadastrado com sucesso! Peca utilizada: " + servico[3][1]);        
         }
-        
-         
+    }
+    
+    //  Mostra os servicos cadastrados e cria um arquivo na raiz do projeto.
+    public static void imprimirServicos(){
+        // Verifica se a servicos cadastrados antes de mostra-los.
+        // Se nao tem servicos cadastrados, o sistema avisa.
+        if (servicos[0][0] == null) {
+            System.out.println("Não tem nenhum servico cadastrado, Cadastre-os antes!");
+        } else{
+        //Se há servicos cadastrados, Mostra todos os servicos.
+            System.out.println("--------------------------------------------------------------------------------------------------------------");
+            System.out.println("                Servicos Cadastrados");
+            System.out.println("--------------------------------------------------------------------------------------------------------------");
+            for (int i = 0; i < servicos.length;i++) {
+                if (servicos[i][0] != null) {
+                    System.out.println(" Codigo: " + servicos[i][0] + " | Descricao: " + servicos[i][1] + " | Valor: R$ " + servicos[i][2] + " | Peca: [Codigo: " + servicos[i][3] + ", Nome: " +  servicos[i][4] + "]" );
+                    System.out.println("--------------------------------------------------------------------------------------------------------------");
+                }
+            }
+
+
+            // Cria o arquivo e coloca os servicos cadastrados dentro do arquivo
+            File arquivo = new File(nomeArquivo);
+            try {
+                // cria o arquivo
+                if (arquivo.createNewFile()){
+                    System.out.println("Relatorio do servicos criado com sucesso");
+                    System.out.println("Arquvio: " + arquivo.getName() + ", Localizado na raiz do projeto.");
+                }
+                // coloca o conteudo
+                try (PrintWriter writer = new PrintWriter(new FileWriter(arquivo, false))) {
+                    writer.print("--------------------------------------------------------------------------------------------------------------\n");
+                    writer.print("                Relatorio de Servicos Cadastrados\n");
+                    writer.print("--------------------------------------------------------------------------------------------------------------\n");
+                    for (int i = 0; i < servicos.length;i++) {
+                        if (servicos[i][0] != null) {
+                        writer.print(" Codigo: " + servicos[i][0] + " | Descricao: " + servicos[i][1] + " | Valor: R$ " + servicos[i][2] + " | Peca: [Codigo: " + servicos[i][3] + ", Nome: " +  servicos[i][4] + "]\n" );
+                        writer.print("--------------------------------------------------------------------------------------------------------------\n");
+                    }
+            }
+                }
+            }catch (IOException e) {
+                System.err.println("Erro ao escrever o arquivo: " + arquivo.getName());
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -90,7 +137,7 @@ public class Main {
                         cadastrarServico();
                         break;
                     case 3:
-                        //imprimirServicos();
+                        imprimirServicos();
                         break;
                     case 4:
                         System.out.println("Saindo...");
